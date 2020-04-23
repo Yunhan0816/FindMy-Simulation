@@ -10,6 +10,6 @@ For the sake of simplicity, our demo doesn't actually perform network or Bluetoo
 
 ## To run this code
 
-1. Install the necessary packages by running `pip3 install -r requirements.txt`
+1. Install the necessary packages without failing on packages you have earlier versions of by running `cat requirements.txt | xargs -n 1 pip3 install`
 2. Run `python3 findmy.py`
 3. Watch the simulation!

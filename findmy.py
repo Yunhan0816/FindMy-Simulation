@@ -19,9 +19,9 @@ iCloudSecret = b"nothing"
 def generate_iCloud_keypair():
     """
     When Bob sets up Find My for the first time and checks the
-    "enable offline discovery" box, Find My generates an EC P-224 
+    "enable offline discovery" box, Find My generates an EC P-224
     private encryption key pair.
-    
+
     Returns:
       Tuple of (privateKey, publicKey)
     """
@@ -44,12 +44,12 @@ def do_KDF(SK, message):
 
 def get_SK_i(SK, counter):
     """
-    function that generates a current symmetric key SK_i with a 
-    recursive algorithm: SK_i = KDF(SK_i-1, “update” ). 
+    function that generates a current symmetric key SK_i with a
+    recursive algorithm: SK_i = KDF(SK_i-1, “update” ).
 
-    argument: 
+    argument:
     SK_0: initialized 256 bit secret Sk0, with counter initialized to zero
-    func_KDF: 
+    func_KDF:
     """
 
     if counter == 0:
@@ -79,8 +79,8 @@ def compute_u_and_v(SK_i):
 def generate_new_keypair(currentSK, d, P):
     """
     The new short lived key pair {di, Pi} is generated with the following
-    formula: di = ui * d + vi(modulo the order of the P-224 curve), 
-    and Pi = ui*P + vi*G. 
+    formula: di = ui * d + vi(modulo the order of the P-224 curve),
+    and Pi = ui*P + vi*G.
     """
     (u_i, v_i) = compute_u_and_v(currentSK)
     d = iCloudKeypair[0]
@@ -116,9 +116,9 @@ def SHA256_hash_to_index(P_i):
 
 def perform_query(index_set):
     """
-    Bob’s Macbook can send queries to the server using the set of lookup index values that he obtained by 
-    performing SHA-256 hashing the Pi . The server returns Bob’s Macbook a decent set of records 
-    representing encrypted locations, Record = {indexi, ECIES(Pi, location) } 
+    Bob’s Macbook can send queries to the server using the set of lookup index values that he obtained by
+    performing SHA-256 hashing the Pi . The server returns Bob’s Macbook a decent set of records
+    representing encrypted locations, Record = {indexi, ECIES(Pi, location) }
     """
 
     result = []
@@ -134,10 +134,10 @@ def bobs_macbook_tries_to_locate_phone():
     Simulates Bob connecting to iCloud on his Macbook to find his lost phone.
 
     records = {index_i, (ECIES(p, location)}
-    For each record, Find My can decrypt the encrypted locations using d_i , which is the private key 
+    For each record, Find My can decrypt the encrypted locations using d_i , which is the private key
     that can be checked if it matches: (locationi,j, timei,j) = ECIES Decrypt (dj, recordi,j).
 
-    The decryption using the private key hence allows Bob to identify the approximate location of his lost device. 
+    The decryption using the private key hence allows Bob to identify the approximate location of his lost device.
 
     Returns:
         (str) The found location of Bob's phone.
@@ -210,9 +210,9 @@ def receive_bobs_publickey(bobKey):
 
     lookup_index = SHA256_hash_to_index(bobKey)
 
-    send_location_and_index_to_iCloud(lookup_index, messageToSendToICloud)
-
     print("A stranger has forwarded location information to iCloud, encrypted using Bob's public key.")
+
+    send_location_and_index_to_iCloud(lookup_index, messageToSendToICloud)
 
     return None
 
@@ -237,7 +237,7 @@ def broadcast_derived_publickey(publicKey):
 def simulate_find_my():
     """
     The driver for our program.
-    
+
     This simulates the situation where Bob's phone is lost with no internet,
     and it tries to communicate with iCloud through the iDevice mesh network.
     """
