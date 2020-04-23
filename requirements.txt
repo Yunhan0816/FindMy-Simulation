@@ -1,0 +1,14 @@
+pycryptodome==3.9.4
+pycryptodomex==3.9.4
+eciespy==0.3.5
+fastecdsa==2.1.2
+py==1.7.0
+pyasn1==0.4.7
+pyasn1-modules==0.2.6
+pycodestyle==2.4.0
+pycosat==0.6.3
+pycparser==2.19
+pycrypto==2.6.1
+pycryptodome==3.9.7
+pycryptodomex==3.9.7
+pycurl==7.43.0.2
