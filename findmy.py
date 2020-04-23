@@ -1,3 +1,7 @@
+# Simulation of Apple's Bluetooth Find My system.
+# April 23, 2020
+# Authors: Hannah Huang and Warren Partridge
+
 from Cryptodome.Hash import SHA256
 from Cryptodome.Util.Padding import pad, unpad
 
@@ -59,14 +63,13 @@ def get_SK_i(SK, counter):
     return get_SK_i(SK_new, counter - 1)
 
 
-#TODO
 # SK_i = key_setup(SK_0, counter)
 def compute_u_and_v(SK_i):
     """
     Given the SK_i, two integers u_i and v_i are computed
     using key derivation function (KDF): (u_i,v_i) = KDF(SK_i, “diversify”).
     """
-    # SK_i = get_SK_i(iCloudSecret, counter)
+
     result = unhexlify(do_KDF(SK_i, b"diversify"))
     result = int.from_bytes(result, byteorder="big")
     result = str(result)[:16]
@@ -82,6 +85,7 @@ def generate_new_keypair(currentSK, d, P):
     formula: di = ui * d + vi(modulo the order of the P-224 curve),
     and Pi = ui*P + vi*G.
     """
+
     (u_i, v_i) = compute_u_and_v(currentSK)
     d = iCloudKeypair[0]
     P = iCloudKeypair[1]
@@ -96,6 +100,7 @@ def encrypt_location_with_publickey(finder_location, P_i):
     """
     After Bob’s device sends PI , surrounding devices receive the key Pi and encrypt their location to Pi with ECIES.
     """
+
     finder_location = pad(finder_location.encode(), 16)
 
     P_i_bytes = "{:016x}".format(P_i).encode()[:16]
@@ -263,13 +268,11 @@ def simulate_find_my():
 
         currentSK = get_SK_i(SK0, SKCounter)  # Get SK_i where i = counter
         u, v = compute_u_and_v(currentSK)
-        # privateDerivedKey, publicDerivedKey = generate_new_keypair(
-        #     SKCounter, privateKey, publicKey)
+
         privateDerivedKey, publicDerivedKey = generate_new_keypair(
             currentSK, privateKey, publicKey)
         print("Bob's phone uses its keypair to generate the derived keypair ({}, {})." .format(privateDerivedKey, publicDerivedKey))
 
-        # privateDerivedKey, public
         print("Bob's phone broadcasts its derived public key {} over Bluetooth..." .format(publicDerivedKey))
         # Hopefully Bob's phone can transmit its location to iCloud...
 
@@ -278,8 +281,7 @@ def simulate_find_my():
 
         print("Bob's Macbook reads iCloud records to try to find one he can decrypt...")
 
-        foundLocation = bobs_macbook_tries_to_locate_phone(
-        )  # Hopefully Bob's macbook finds location info in iCloud...
+        foundLocation = bobs_macbook_tries_to_locate_phone()  # Hopefully Bob's macbook finds location info in iCloud...
 
         if (foundLocation != None):
             print("Bob has located his phone after {} minutes! It was at: {}" .format(currentTime, foundLocation))
